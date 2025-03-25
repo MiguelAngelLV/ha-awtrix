@@ -1,0 +1,29 @@
+---
+name: Pylint
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+env:
+  DEFAULT_PYTHON: "3.13"
+
+jobs:
+  pylint:
+    name: Pylint
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⤵️ Check out code from GitHub
+        uses: actions/checkout@v4.2.2
+
+      - name: 🏗 Set up uv
+        uses: astral-sh/setup-uv@v5.3.1
+        with:
+          enable-cache: true
+          python-version: ${{ env.DEFAULT_PYTHON }}
+
+      - name: 🏗 Install dependencies
+        run: uv sync --frozen --dev
+
+      - name: 🚀 Run pylint
+        run: uv run pre-commit run pylint --all-files

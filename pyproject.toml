@@ -1,0 +1,60 @@
+[project]
+name = "awtrix"
+version = "1.0"
+description = "Home Assistant custom component to control Awtrix devices"
+authors = [
+    { name = "Miguel Ángel López", email = "miguel.angel.lopez.vicente@gmail.com" }
+]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/miguelangellv/ha-awtrix"
+
+requires-python = ">=3.13"
+dependencies = [
+    "homeassistant>=2025.2.0",
+]
+
+
+[project.urls]
+Homepage = "https://github.com/miguelangel_lv/ha-awtrix/"
+Changelog = "https://github.com/miguelangel_lv/ha-awtrix/releases"
+Issues = "https://github.com/miguelangel_lv/ha-awtrix/issues"
+Repository = "https://github.com/miguelangel_lv/ha-awtrix"
+
+
+[tool.hatch.build.targets.wheel]
+packages = ["custom_components/awtrix"]
+
+[tool.ruff]
+line-length = 140
+src = ["custom_components/awtrix"]
+
+[tool.pylint.'MESSAGES CONTROL']
+max-line-length = 140
+
+[tool.ruff.lint.flake8-import-conventions.extend-aliases]
+"homeassistant.helpers.area_registry" = "ar"
+"homeassistant.helpers.config_validation" = "cv"
+"homeassistant.helpers.device_registry" = "dr"
+"homeassistant.helpers.entity_registry" = "er"
+"homeassistant.helpers.issue_registry" = "ir"
+voluptuous = "vol"
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = true
+known-first-party = [
+    "homeassistant",
+]
+combine-as-imports = true
+
+[tool.uv]
+dev-dependencies = [
+    "pre-commit>=3.6.0",
+    "pre-commit-hooks>=4.5.0",
+    "pylint>=3.1.0",
+    "ruff>=0.3.2",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
