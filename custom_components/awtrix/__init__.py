@@ -4,14 +4,16 @@ from __future__ import annotations
 
 import json
 import logging
+
 from typing import TYPE_CHECKING
 
+import homeassistant.helpers.config_validation as cv
 from homeassistant.components import mqtt
 from homeassistant.const import Platform
 from homeassistant.helpers.entity_registry import async_entries_for_device, async_get
 from homeassistant.util.read_only_dict import ReadOnlyDict
 
-from custom_components.awtrix.const import DOMAIN
+from .const import DOMAIN
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
@@ -21,8 +23,12 @@ _LOGGER = logging.getLogger(__name__)
 
 PLATFORMS: list[Platform] = [Platform.BINARY_SENSOR]
 
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
-async def async_setup(hass: HomeAssistant, config: dict):
+
+async def async_setup(hass: HomeAssistant, _: dict):
+    """Awtrix integration setup."""
+
     async def update_settings(call: ServiceCall):
         device = call.data.get("device")
         payload = json.dumps(call.data)
@@ -54,12 +60,12 @@ async def async_setup(hass: HomeAssistant, config: dict):
     return True
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_setup_entry(_: HomeAssistant, __: ConfigEntry) -> bool:
     """Initialise entry configuration."""
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
+async def async_unload_entry(_: HomeAssistant, __: ConfigEntry) -> bool:
     """Remove entry after unload component."""
     return True
 

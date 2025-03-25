@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Self
 
 from homeassistant import config_entries
+from typing_extensions import override
 
 from .const import (
     DOMAIN,
@@ -32,3 +33,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._errors = {}
 
         return self.async_create_entry(title="Atriwx", data={})
+
+    @override
+    def is_matching(self, other_flow: Self) -> bool:
+        return False
