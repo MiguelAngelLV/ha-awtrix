@@ -26,11 +26,9 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     def __init__(self) -> None:
         """Initialize values."""
         self._errors = None
-    async def async_step_user(
-        self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+
+    async def async_step_user(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Config flow for Awtrix."""
         self._errors = {}
 
         return self.async_create_entry(title="Atriwx", data={})
-

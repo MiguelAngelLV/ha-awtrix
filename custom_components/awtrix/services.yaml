@@ -694,11 +694,11 @@ custom_app:
         select:
           mode: dropdown
           options:
-            - value: 0
+            - value: '0'
               label: Static
-            - value: 1
+            - value: '1'
               label: Moves once
-            - value: 2
+            - value: '2'
               label: Reappears
     repeat:
       name: "Repeat Scroll"
