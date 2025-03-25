@@ -2,6 +2,7 @@
   "domain": "awtrix",
   "name": "Awtrix",
   "codeowners": ["@miguelangellv"],
+  "after_dependencies": ["mqtt"],
   "config_flow": true,
   "documentation": "https://github.com/MiguelAngelLV/ha-awtrix",
   "iot_class": "local_polling",
