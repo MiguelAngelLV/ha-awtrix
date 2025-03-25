@@ -5,6 +5,7 @@ settings:
     device:
       name: Awtrix device
       required: true
+      description: The Awtrix device to configure.
       selector:
         device:
           manufacturer: Blueforcer
@@ -294,6 +295,7 @@ notification:
     device:
       name: Awtrix device
       required: true
+      description: The Awtrix device to send the notification to.
       selector:
         device:
           manufacturer: Blueforcer
@@ -585,6 +587,7 @@ custom_app:
     device:
       name: Awtrix device
       required: true
+      description: The Awtrix device to update the custom app.
       selector:
         device:
           manufacturer: Blueforcer
@@ -592,6 +595,7 @@ custom_app:
     app:
       name: App Name
       required: true
+      description: The name of the custom app to update.
       selector:
         text: {}
     save:
