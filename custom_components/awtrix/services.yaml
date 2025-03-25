@@ -25,27 +25,27 @@ settings:
         select:
           mode: dropdown
           options:
-            - value: 0
+            - value: "0"
               label: Random
-            - value: 1
+            - value: "1"
               label: Slide
-            - value: 2
+            - value: "2"
               label: Dim
-            - value: 3
+            - value: "3"
               label: Zoom
-            - value: 4
+            - value: "4"
               label: Rotate
-            - value: 5
+            - value: "5"
               label: Pixelate
-            - value: 6
+            - value: "6"
               label: Curtain
-            - value: 7
+            - value: "7"
               label: Ripple
-            - value: 8
+            - value: "8"
               label: Blink
-            - value: 9
+            - value: "9"
               label: Reload
-            - value: 10
+            - value: "10"
               label: Fade
     TSPEED:
       name: "App Transition Speed"
@@ -69,19 +69,19 @@ settings:
         select:
           mode: dropdown
           options:
-            - value: 0
+            - value: "0"
               label: Time + Weekday
-            - value: 1
+            - value: "1"
               label: Icon1 + Time + Weekday
-            - value: 2
+            - value: "2"
               label: Icon1 + Weekday + Time
-            - value: 3
+            - value: "3"
               label: Icon2 + Time + Weekday
-            - value: 4
+            - value: "4"
               label: Icon2 + Weekday + Time
-            - value: 5
+            - value: "5"
               label: Time
-            - value: 6
+            - value: "6"
               label: Binary
     CHCOL:
       name: "Calendar Header Color"
@@ -326,11 +326,11 @@ notification:
         select:
           mode: dropdown
           options:
-            - value: 0
+            - value: "0"
               label: Global setting
-            - value: 1
+            - value: "1"
               label: Uppercase
-            - value: 2
+            - value: "2"
               label: No transform
     topText:
       name: "Top Text"
@@ -400,11 +400,11 @@ notification:
         select:
           mode: dropdown
           options:
-            - value: 0
+            - value: "0"
               label: Static
-            - value: 1
+            - value: "1"
               label: Moves once
-            - value: 2
+            - value: "2"
               label: Reappears
     repeat:
       name: "Repeat Scroll"
@@ -620,11 +620,11 @@ custom_app:
         select:
           mode: dropdown
           options:
-            - value: 0
+            - value: "0"
               label: Global setting
-            - value: 1
+            - value: "1"
               label: Uppercase
-            - value: 2
+            - value: "2"
               label: No transform
     topText:
       name: "Top Text"
@@ -694,11 +694,11 @@ custom_app:
         select:
           mode: dropdown
           options:
-            - value: '0'
+            - value: "0"
               label: Static
-            - value: '1'
+            - value: "1"
               label: Moves once
-            - value: '2'
+            - value: "2"
               label: Reappears
     repeat:
       name: "Repeat Scroll"
@@ -798,9 +798,9 @@ custom_app:
         select:
           mode: dropdown
           options:
-            - value: 0
+            - value: "0"
               label: Deletes the app
-            - value: 1
+            - value: "1"
               label: Mark it as stale
     noScroll:
       name: "Disable Scrolling"
