@@ -355,8 +355,8 @@ notification:
       selector:
         boolean: {}
     color:
-      name: "Text Color"
-      description: "Color of the text."
+      name: "Color"
+      description: "Color of the text or charts."
       example: "#FFFFFF"
       selector:
         color_rgb: {}
@@ -651,8 +651,8 @@ custom_app:
       selector:
         boolean: {}
     color:
-      name: "Text Color"
-      description: "Color of the text."
+      name: "Color"
+      description: "Color of the text or charts."
       example: "#FFFFFF"
       selector:
         color_rgb: {}
