@@ -1,6 +1,6 @@
 # HA Awtrix
 
-This component uses the MQTT API of [Awtrix](https://blueforcer.de/awtrix-2-0/) in Home Assistant easily by adding several additional actions.
+This component uses the MQTT API of [Awtrix](https://blueforcer.github.io/awtrix3/#/) in Home Assistant easily by adding several additional actions.
 
 ## Installation
 
