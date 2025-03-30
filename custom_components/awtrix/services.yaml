@@ -491,12 +491,6 @@ notification:
       example: "#333333"
       selector:
         color_rgb: {}
-    color_points:
-      name: "Color Points"
-      description: 'Array of color points below the text: [ "#FF0000", "#00FF00", "#0000FF" ]'
-      example: ["#FF0000", "#00FF00", "#0000FF"]
-      selector:
-        object: {}
     draw:
       name: "Draw a custom image"
       description: "Array of drawing instructions. Each object represents a drawing command. https://blueforcer.github.io/awtrix3/#/api?id=drawing-instructions"
@@ -765,12 +759,6 @@ custom_app:
       example: "#333333"
       selector:
         color_rgb: {}
-    color_points:
-      name: "Color Points"
-      description: 'Array of color points below the text: [ "#FF0000", "#00FF00", "#0000FF" ]'
-      example: ["#FF0000", "#00FF00", "#0000FF"]
-      selector:
-        object: {}
     pos:
       name: "Custom Page Position"
       description: "Defines the position of the custom page in the loop."
