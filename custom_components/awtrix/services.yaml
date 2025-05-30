@@ -857,3 +857,22 @@ custom_app:
             - storm
             - thunder
             - frost
+
+delete_custom_app:
+  name: Delete Custom app
+  description: Remove custom app from the Awtrix device.
+  fields:
+    device:
+      name: Awtrix device
+      required: true
+      description: The Awtrix device to delete the custom app.
+      selector:
+        device:
+          manufacturer: Blueforcer
+          model: AWTRIX 3
+    app:
+      name: App Name
+      required: true
+      description: The name of the custom app to delete.
+      selector:
+        text: {}
