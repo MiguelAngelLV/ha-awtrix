@@ -876,3 +876,24 @@ delete_custom_app:
       description: The name of the custom app to delete.
       selector:
         text: {}
+
+deep_sleep:
+  name: Deep Sleep
+  description: "Send the board in deep sleep mode (turns off the matrix as well), good for saving battery life."
+  fields:
+    device:
+      name: Awtrix device
+      required: true
+      description: The Awtrix device to put into deep sleep mode.
+      selector:
+        device:
+          manufacturer: Blueforcer
+          model: AWTRIX 3
+    sleep:
+      name: Seconds to sleep
+      description: "Number of seconds to sleep"
+      example: 120
+      selector:
+        number:
+          min: 1
+          mode: box

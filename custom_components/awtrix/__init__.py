@@ -56,10 +56,18 @@ async def async_setup(hass: HomeAssistant, _: dict):
 
         await mqtt.async_publish(hass, f"{prefix}/custom/{app}", "")
 
+    async def deep_sleep(call: ServiceCall):
+        device = call.data.get("device")
+        payload = json.dumps(call.data)
+        prefix = await _get_prefix(hass, device)
+
+        await mqtt.async_publish(hass, f"{prefix}/sleep", payload)
+
     hass.services.async_register(DOMAIN, "settings", update_settings)
     hass.services.async_register(DOMAIN, "notification", notification)
     hass.services.async_register(DOMAIN, "custom_app", custom_app)
     hass.services.async_register(DOMAIN, "delete_custom_app", delete_custom_app)
+    hass.services.async_register(DOMAIN, "deep_sleep", deep_sleep)
 
     return True
 
