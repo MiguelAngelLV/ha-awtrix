@@ -21,7 +21,7 @@ _LOGGER = logging.getLogger(__name__)
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Config flow for Awtrix."""
 
-    VERSION = 1
+    VERSION = 2
     single_instance_allowed = True
 
     def __init__(self) -> None:
@@ -32,7 +32,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Config flow for Awtrix."""
         self._errors = {}
 
-        return self.async_create_entry(title="Atriwx", data={})
+        return self.async_create_entry(title="Awtrix", data={})
 
     @override
     def is_matching(self, other_flow: Self) -> bool:
