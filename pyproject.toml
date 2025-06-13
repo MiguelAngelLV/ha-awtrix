@@ -1,6 +1,6 @@
 [project]
 name = "awtrix"
-version = "0.5"
+version = "0.6"
 description = "Home Assistant custom component to control Awtrix devices"
 authors = [
     { name = "Miguel Ángel López", email = "miguel.angel.lopez.vicente@gmail.com" }

@@ -91,3 +91,13 @@ async def _get_prefix(hass, device_id: str) -> str | None:
             return hass.states.get(e.entity_id).state
 
     return None
+
+
+async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Migrate old config entries."""
+    version = entry.version
+    if version < 2:
+        if entry.title == "Atriwx":
+            hass.config_entries.async_update_entry(entry, title="Awtrix", version=2)
+
+    return True
