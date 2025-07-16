@@ -356,10 +356,14 @@ notification:
       fields:
         text:
           name: "Message Text"
-          description: "The text to display on the matrix."
+          description: >
+            The text to display on the matrix (Ex.: Hello, Awtrix).
+            To present text where specific fragments can be colorized,
+            use an array of fragments with "t" representing the text fragment
+            and "c" denoting the color's hex value (Ex.: [{ "t": "Hello, ", "c": "FF0000"}, {"t": "world!", "c": "00FF00"}]).
           example: "Hello, Awtrix!"
           selector:
-            text: {}
+            object: {}
         
         textCase:
           name: "Text Case"
@@ -732,10 +736,14 @@ custom_app:
       fields:
         text:
           name: "Message Text"
-          description: "The text to display on the matrix."
+          description: >
+            The text to display on the matrix (Ex.: Hello, Awtrix).
+            To present text where specific fragments can be colorized,
+            use an array of fragments with "t" representing the text fragment
+            and "c" denoting the color's hex value (Ex.: [{ "t": "Hello, ", "c": "FF0000"}, {"t": "world!", "c": "00FF00"}]).
           example: "Hello, Awtrix!"
           selector:
-            text: {}
+            object: {}
 
         textCase:
           name: "Text Case"
