@@ -288,6 +288,19 @@ settings:
             - thunder
             - frost
 
+dismiss:
+  name: Dismiss Custom notification
+  description: Dismiss the current notification on the Awtrix display.
+  fields:
+    device:
+      name: Awtrix device
+      required: true
+      description: The Awtrix device to clear the notification on.
+      selector:
+        device:
+          manufacturer: Blueforcer
+          model: AWTRIX 3
+
 notification:
   name: Display Custom notification
   description: Send a custom message to the Awtrix display.
