@@ -18,9 +18,12 @@ You can install the component manually by copying the contents of the `custom_co
 
 Once installed, go to _Devices and Services -> Add Integration_ and search for _Awtrix_. After adding it, you will have the new actions available.
 
-You will have to configure your device MQTT settings so it report correctly to your mqtt server before being able to see the device using the awtrix actions bellow.
+You MUST have configured your device MQTT settings to connect correctly to your mqtt server before being able to see the device using the awtrix actions bellow. If you skip this step you'll have "no matching device" message in the dropdown menu of the actions.
 
-Ex. <img width="861" height="586" alt="image" src="https://github.com/user-attachments/assets/9c20324f-13e6-48f4-9ff4-26df2b796613" />
+Ex. 
+
+<img width="461" height="286" alt="image" src="https://github.com/user-attachments/assets/9c20324f-13e6-48f4-9ff4-26df2b796613" />
+
 Click, save configurations and then Restart ESP. You can use default mqtt user/pass but it's a good security practice to add one dedicated to this device in the addon configuration.
 
 ## Actions
