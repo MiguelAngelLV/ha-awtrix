@@ -1,0 +1,11 @@
+{
+  "config": {
+    "error": {
+      "unknown": "Nieznany błąd"
+    },
+    "abort": {
+      "single_instance_allowed": "Tylko jedna instancja tej integracji jest dozwolona."
+    },
+    "step": {}
+  }
+}
