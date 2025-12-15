@@ -8,7 +8,7 @@ This component uses the MQTT API of [Awtrix](https://blueforcer.github.io/awtrix
 
 You can add the component automatically using HACS by clicking the following link:
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=miguelangellv&repository=ha-awtrix&category=integration)
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=mpnogaj&repository=ha-awtrix&category=integration)
 
 ### Manual
 

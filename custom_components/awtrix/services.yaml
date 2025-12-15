@@ -312,7 +312,7 @@ notification:
             number:
               min: 1
               mode: box
-        
+
         repeat:
           name: "Repeat Scroll"
           description: "Number setting how many times the text should be scrolled through the matrix before the notification ends (-1 duration taken into account)."
@@ -321,21 +321,21 @@ notification:
             number:
               min: -1
               mode: box
-        
+
         hold:
           name: "Hold Notification"
           description: "Set it to true, to hold your notification on top until you press the middle button or dismiss it via HomeAssistant."
           example: false
           selector:
             boolean: {}
-        
+
         stack:
           name: "Stack Notifications"
           description: "If disabled, replaces the current notification immediately."
           example: true
           selector:
             boolean: {}
-        
+
         wakeup:
           name: "Wake Up Matrix"
           description: "If off, wakes up the matrix during the notification."
@@ -349,7 +349,7 @@ notification:
           example: ["prefix1", "prefix2"]
           selector:
             object: {}
-    
+
     # Text params
     Text Parameters:
       collapsed: true
@@ -364,7 +364,7 @@ notification:
           example: "Hello, Awtrix!"
           selector:
             object: {}
-        
+
         textCase:
           name: "Text Case"
           description: "Convert text case."
@@ -379,7 +379,7 @@ notification:
                   label: Uppercase
                 - value: "2"
                   label: No transform
-        
+
         color:
           name: "Color"
           description: "Color of the text or charts."
@@ -414,7 +414,7 @@ notification:
           example: false
           selector:
             boolean: {}
-        
+
         textOffset:
           name: "Text Offset"
           description: "Sets an offset for the text's starting position."
@@ -423,7 +423,7 @@ notification:
             number:
               min: 0
               mode: box
-        
+
         blinkText:
           name: "Blink Interval"
           description: "Blinks the text at the given interval (ms)."
@@ -432,7 +432,7 @@ notification:
             number:
               min: 0
               mode: box
-        
+
         fadeText:
           name: "Fade Interval"
           description: "Fades text on and off at the given interval (ms)."
@@ -441,14 +441,14 @@ notification:
             number:
               min: 0
               mode: box
-        
+
         noScroll:
           name: "Disable Scrolling"
           description: "Prevents text from scrolling."
           example: false
           selector:
             boolean: {}
-        
+
         scrollSpeed:
           name: "Scroll Speed"
           description: "Percentage of the original scroll speed."
@@ -458,7 +458,7 @@ notification:
               min: 1
               max: 200
               mode: box
-    
+
     # Background and Effect params
     Background & Effect Parameters:
       collapsed: true
@@ -497,14 +497,14 @@ notification:
                 - PlasmaCloud
                 - MovingLine
                 - Fade
-        
+
         effectSettings:
           name: "Effect Settings"
           description: "Settings for color and speed of the effect."
           example: '{ "effect":"Plasma",  "effectSettings":{ "speed":3, "palette":"Rainbow", "blend":true }}'
           selector:
             object: {}
-        
+
         overlay:
           name: "Overlay Effect"
           description: "Sets an overlay effect."
@@ -520,7 +520,7 @@ notification:
                 - storm
                 - thunder
                 - frost
-        
+
     # Icon params
     Icon Parameters:
       collapsed: true
@@ -546,7 +546,7 @@ notification:
                   label: Moves once
                 - value: "2"
                   label: Reappears
-        
+
     # Sound params
     Sound Parameters:
       collapsed: true
@@ -648,7 +648,7 @@ notification:
           example: '{"draw":[ {"dc": [28, 4, 3, "#FF0000"]}, {"dr": [20, 4, 4, 4, "#0000FF"]}, {"dt": [0, 0, "Hello", "#00FF00"]} ]}'
           selector:
             text:
-              multiline: true 
+              multiline: true
 
 custom_app:
   name: Display Custom app
@@ -662,7 +662,7 @@ custom_app:
         device:
           manufacturer: Blueforcer
           model: AWTRIX 3
-    
+
     # Custom App Global params
     Custom App Global Parameters:
       collapsed: true
@@ -839,7 +839,6 @@ custom_app:
               max: 200
               mode: box
 
-
     # Background and Effect params
     Background & Effect Parameters:
       collapsed: true
@@ -926,8 +925,8 @@ custom_app:
                   label: Moves once
                 - value: "2"
                   label: Reappears
-        
-     # Graph & Chart params
+
+      # Graph & Chart params
     Graph & Chart Parameters:
       collapsed: true
       fields:
@@ -989,7 +988,7 @@ custom_app:
           example: '{"draw":[ {"dc": [28, 4, 3, "#FF0000"]}, {"dr": [20, 4, 4, 4, "#0000FF"]}, {"dt": [0, 0, "Hello", "#00FF00"]} ]}'
           selector:
             text:
-              multiline: true  
+              multiline: true
 
 delete_custom_app:
   name: Delete Custom app
@@ -1030,3 +1029,23 @@ deep_sleep:
         number:
           min: 1
           mode: box
+
+switch_app:
+  name: Switch to App
+  description: "Directly switch to a specific app by name."
+  fields:
+    device:
+      name: Awtrix device
+      required: true
+      description: The Awtrix device to switch apps on.
+      selector:
+        device:
+          manufacturer: Blueforcer
+          model: AWTRIX 3
+    name:
+      name: App Name
+      required: true
+      description: "The name of the app to switch to. Built-in apps: Time, Date, Temperature, Humidity, Battery. For custom apps, use the name you set in the custom_app service."
+      example: "Time"
+      selector:
+        text: {}
