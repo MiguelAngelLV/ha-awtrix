@@ -34,6 +34,12 @@ async def async_setup(hass: HomeAssistant, _: dict):
 
         await mqtt.async_publish(hass, f"{prefix}/settings", payload)
 
+    async def dismiss(call: ServiceCall):
+        device = call.data.get("device")
+        prefix = await _get_prefix(hass, device)
+
+        await mqtt.async_publish(hass, f"{prefix}/notify/dismiss", "")
+
     async def notification(call: ServiceCall):
         device = call.data.get("device")
         payload = json.dumps(call.data)
@@ -72,6 +78,7 @@ async def async_setup(hass: HomeAssistant, _: dict):
         await mqtt.async_publish(hass, f"{prefix}/switch", payload)
 
     hass.services.async_register(DOMAIN, "settings", update_settings)
+    hass.services.async_register(DOMAIN, "dismiss", dismiss)
     hass.services.async_register(DOMAIN, "notification", notification)
     hass.services.async_register(DOMAIN, "custom_app", custom_app)
     hass.services.async_register(DOMAIN, "delete_custom_app", delete_custom_app)
