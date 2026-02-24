@@ -1043,3 +1043,23 @@ deep_sleep:
         number:
           min: 1
           mode: box
+          
+switch_app:
+  name: Switch to App
+  description: "Directly switch to a specific app by name."
+  fields:
+    device:
+      name: Awtrix device
+      required: true
+      description: The Awtrix device to switch apps on.
+      selector:
+        device:
+          manufacturer: Blueforcer
+          model: AWTRIX 3
+    name:
+      name: App Name
+      required: true
+      description: "The name of the app to switch to. Built-in apps: Time, Date, Temperature, Humidity, Battery. For custom apps, use the name you set in the custom_app service."
+      example: "Time"
+      selector:
+        text: {}
