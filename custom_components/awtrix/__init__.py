@@ -29,7 +29,7 @@ async def async_setup(hass: HomeAssistant, _: dict):
 
     async def update_settings(call: ServiceCall):
         device = call.data.get("device")
-        payload = json.dumps(call.data)
+        payload = _prepare_payload(call.data)
         prefix = await _get_prefix(hass, device)
 
         await mqtt.async_publish(hass, f"{prefix}/settings", payload)
@@ -42,7 +42,7 @@ async def async_setup(hass: HomeAssistant, _: dict):
 
     async def notification(call: ServiceCall):
         device = call.data.get("device")
-        payload = json.dumps(call.data)
+        payload = _prepare_payload(call.data)
         prefix = await _get_prefix(hass, device)
 
         await mqtt.async_publish(hass, f"{prefix}/notify", payload)
@@ -50,7 +50,7 @@ async def async_setup(hass: HomeAssistant, _: dict):
     async def custom_app(call: ServiceCall):
         device = call.data.get("device")
         app = call.data.get("app")
-        payload = json.dumps(call.data)
+        payload = _prepare_payload(call.data)
         prefix = await _get_prefix(hass, device)
 
         await mqtt.async_publish(hass, f"{prefix}/custom/{app}", payload)
@@ -64,7 +64,7 @@ async def async_setup(hass: HomeAssistant, _: dict):
 
     async def deep_sleep(call: ServiceCall):
         device = call.data.get("device")
-        payload = json.dumps(call.data)
+        payload = _prepare_payload(call.data)
         prefix = await _get_prefix(hass, device)
 
         await mqtt.async_publish(hass, f"{prefix}/sleep", payload)
@@ -96,6 +96,45 @@ async def async_setup_entry(_: HomeAssistant, __: ConfigEntry) -> bool:
 async def async_unload_entry(_: HomeAssistant, __: ConfigEntry) -> bool:
     """Remove entry after unload component."""
     return True
+
+
+def _prepare_payload(data: dict) -> str:
+    """Prepare payload for Awtrix MQTT."""
+    payload = data.copy()
+
+    # Remove internal fields
+    payload.pop("device", None)
+    payload.pop("app", None)
+
+    # Fields that should be strings if they are numeric
+    to_string = [
+        "text",
+        "icon",
+        "color",
+        "background",
+        "progressC",
+        "progressBC",
+        "barBC",
+        "lineC",
+        "effect",
+        "overlay",
+        "sound",
+        "rtttl",
+    ]
+
+    for key in to_string:
+        if key in payload:
+            if isinstance(payload[key], (int, float)):
+                payload[key] = str(payload[key])
+
+    # Handle fragments in text
+    if "text" in payload and isinstance(payload["text"], list):
+        for fragment in payload["text"]:
+            if isinstance(fragment, dict) and "t" in fragment:
+                if isinstance(fragment["t"], (int, float)):
+                    fragment["t"] = str(fragment["t"])
+
+    return json.dumps(payload)
 
 
 async def _get_prefix(hass, device_id: str) -> str | None:
