@@ -1,0 +1,163 @@
+name: Create Release PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Release type (patch, minor, major)'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+jobs:
+  create-release-pr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Get current version
+        id: current_version
+        run: |
+          CURRENT_VERSION=$(jq -r '.version' custom_components/awtrix/manifest.json)
+          echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "Current version: $CURRENT_VERSION"
+
+      - name: Calculate new version
+        id: new_version
+        run: |
+          CURRENT="${{ steps.current_version.outputs.version }}"
+          TYPE="${{ github.event.inputs.version_type }}"
+          
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+          
+          case $TYPE in
+            major)
+              MAJOR=$((MAJOR + 1))
+              MINOR=0
+              PATCH=0
+              ;;
+            minor)
+              MINOR=$((MINOR + 1))
+              PATCH=0
+              ;;
+            patch)
+              PATCH=$((PATCH + 1))
+              ;;
+          esac
+          
+          NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "New version: $NEW_VERSION"
+
+      - name: Get last tag
+        id: last_tag
+        run: |
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          echo "tag=$LAST_TAG" >> $GITHUB_OUTPUT
+          echo "Last tag: $LAST_TAG"
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          NEW_VERSION="${{ steps.new_version.outputs.version }}"
+          LAST_TAG="${{ steps.last_tag.outputs.tag }}"
+          
+          if [ -z "$LAST_TAG" ]; then
+            CHANGELOG=$(git log --pretty=format:"- %s (%h)" --no-merges | head -20)
+          else
+            CHANGELOG=$(git log ${LAST_TAG}..HEAD --pretty=format:"- %s (%h)" --no-merges)
+          fi
+          
+          echo "$CHANGELOG" > /tmp/changelog.txt
+          
+          echo "Changelog generated successfully"
+
+      - name: Create release branch
+        run: |
+          NEW_VERSION="${{ steps.new_version.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b release/v$NEW_VERSION
+
+      - name: Update manifest.json version
+        run: |
+          NEW_VERSION="${{ steps.new_version.outputs.version }}"
+          jq --arg version "$NEW_VERSION" '.version = $version' \
+            custom_components/awtrix/manifest.json > /tmp/manifest.json
+          mv /tmp/manifest.json custom_components/awtrix/manifest.json
+          cat custom_components/awtrix/manifest.json
+
+      - name: Update pyproject.toml version
+        run: |
+          NEW_VERSION="${{ steps.new_version.outputs.version }}"
+          sed -i "s/^version = \".*\"/version = \"$NEW_VERSION\"/" pyproject.toml
+          grep "^version = " pyproject.toml
+
+      - name: Commit changes
+        run: |
+          NEW_VERSION="${{ steps.new_version.outputs.version }}"
+          git add custom_components/awtrix/manifest.json pyproject.toml
+          git commit -m "chore: bump version to v$NEW_VERSION"
+          git push origin release/v$NEW_VERSION
+
+      - name: Create Pull Request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          NEW_VERSION="${{ steps.new_version.outputs.version }}"
+          LAST_TAG="${{ steps.last_tag.outputs.tag }}"
+          CURRENT_VERSION="${{ steps.current_version.outputs.version }}"
+          VERSION_TYPE="${{ github.event.inputs.version_type }}"
+        
+          CHANGELOG=$(cat /tmp/changelog.txt)
+          
+          cat > /tmp/pr_body.md << 'EOFPR'
+          ## 🚀 Release v%%NEW_VERSION%%
+          
+          ### 📋 Changes included
+
+          Changes since v%%CURRENT_VERSION%% (%%VERSION_TYPE%% release):
+          
+          %%CHANGELOG%%
+          
+          ---
+          
+          ### 📝 Notes
+          
+          This PR was automatically created by the release workflow. 
+          Merging this PR will automatically create the tag and release on GitHub.
+          EOFPR
+          
+          sed -i "s/%%NEW_VERSION%%/$NEW_VERSION/g" /tmp/pr_body.md
+          sed -i "s/%%CURRENT_VERSION%%/$CURRENT_VERSION/g" /tmp/pr_body.md
+          sed -i "s/%%VERSION_TYPE%%/$VERSION_TYPE/g" /tmp/pr_body.md
+          
+          echo "$CHANGELOG" > /tmp/changelog_temp.txt
+          
+          sed -i "/%%CHANGELOG%%/r /tmp/changelog_temp.txt" /tmp/pr_body.md
+          sed -i "/%%CHANGELOG%%/d" /tmp/pr_body.md
+          
+          gh pr create \
+            --title "v$NEW_VERSION" \
+            --body-file /tmp/pr_body.md \
+            --base main \
+            --head release/v$NEW_VERSION \
+            --label release
+          
+          echo "✅ PR created for v$NEW_VERSION"
+
