@@ -1,0 +1,197 @@
+name: Create Release and Tag
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  create-release:
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'release')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Get version from manifest
+        id: get_version
+        run: |
+          VERSION=$(jq -r '.version' custom_components/awtrix/manifest.json)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version from manifest: $VERSION"
+
+      - name: Get PR body
+        id: pr_body
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          PR_BODY=$(gh pr view $PR_NUMBER --json body --jq '.body')
+          echo "$PR_BODY" > /tmp/pr_body.txt
+          CHANGELOG=$(echo "$PR_BODY" | sed -n '/### 📋 Changes included/,/---/p' | sed '1d;$d' | sed '/^$/d')
+          
+          if [ -z "$CHANGELOG" ]; then
+            CHANGELOG="$PR_BODY"
+          fi
+          
+          echo "$CHANGELOG" > /tmp/changelog.txt
+          echo "Changelog extracted from PR"
+
+      - name: Check if tag exists
+        id: check_tag
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          if git rev-parse "v$VERSION" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "⚠️ Tag v$VERSION already exists"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "✅ Tag v$VERSION does not exist"
+          fi
+
+      - name: Create and push tag
+        if: steps.check_tag.outputs.exists == 'false'
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git tag -a "v$VERSION" -m "Release v$VERSION"
+          git push origin "v$VERSION"
+          
+          echo "✅ Tag v$VERSION created and pushed"
+
+      - name: Create GitHub Release
+        if: steps.check_tag.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          CHANGELOG=$(cat /tmp/changelog.txt)
+          
+          # Release notes
+          RELEASE_NOTES=$(cat <<EOF
+          ## 🚀 Awtrix v$VERSION
+          
+          $CHANGELOG
+          
+          EOF
+          )
+          
+          gh release create "v$VERSION" \
+            --title "v$VERSION" \
+            --notes "$RELEASE_NOTES" \
+            --target main
+          
+          echo "✅ GitHub Release v$VERSION created successfully"
+
+      - name: Create release archive
+        if: steps.check_tag.outputs.exists == 'false'
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          
+          mkdir -p /tmp/awtrix
+          
+          cp -r custom_components/awtrix/* /tmp/awtrix/
+          
+          cd /tmp
+          zip -r awtrix.zip awtrix/
+          
+          echo "✅ Archive created: awtrix.zip"
+
+      - name: Upload release archive
+        if: steps.check_tag.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          
+          gh release upload "v$VERSION" /tmp/awtrix.zip
+          
+          echo "✅ Archive uploaded to release v$VERSION"
+
+      - name: Update release description with download info
+        if: steps.check_tag.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          
+          CURRENT_NOTES=$(gh release view "v$VERSION" --json body --jq '.body')
+          
+          DOWNLOAD_INFO=$(cat <<EOF
+          
+          ### 📥 Downloads
+          
+          - **awtrix.zip** - Complete integration for manual installation
+          EOF
+          )
+          
+          NEW_NOTES="${CURRENT_NOTES}${DOWNLOAD_INFO}"
+          
+          gh release edit "v$VERSION" --notes "$NEW_NOTES"
+          
+          echo "✅ Release description updated"
+
+      - name: Comment on PR
+        if: steps.check_tag.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          
+          COMMENT=$(cat <<EOF
+          ## 🎉 Release Created Successfully
+          
+          ✅ Release **v$VERSION** has been created automatically.
+          
+          - 🏷️ Tag: [\`v$VERSION\`](https://github.com/${{ github.repository }}/releases/tag/v$VERSION)
+          - 📦 Release: [v$VERSION](https://github.com/${{ github.repository }}/releases/tag/v$VERSION)
+          
+          ### Next steps
+          
+          1. Verify the release contains all the correct information
+          2. If you use HACS, the new version will be available automatically
+          3. Users will be able to update from the HACS interface
+          EOF
+          )
+          
+          gh pr comment $PR_NUMBER --body "$COMMENT"
+          
+          echo "✅ Comment added to PR #$PR_NUMBER"
+
+      - name: Notify if tag exists
+        if: steps.check_tag.outputs.exists == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${{ steps.get_version.outputs.version }}"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          
+          COMMENT=$(cat <<EOF
+          ## ⚠️ Tag Already Exists
+          
+          The tag \`v$VERSION\` already exists in the repository.
+          
+          Please verify whether:
+          1. The version in the manifest is correct
+          2. There is no conflict with a previous release
+          
+          If you need to create a new release, make sure the version is unique.
+          EOF
+          )
+          
+          gh pr comment $PR_NUMBER --body "$COMMENT"
+          
+          echo "⚠️ Tag v$VERSION already exists - skipping release creation"
+          exit 1
+
